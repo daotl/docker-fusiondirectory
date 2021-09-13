@@ -1,30 +1,35 @@
 version: '3.7'
 services:
-  
-  fusiondirectory-app:
-    container_name: fusiondirectory-app
-    image: fusiondirectory
+
+  # https://github.com/tiredofit/docker-fusiondirectory#configuration
+  fusiondirectory:
+    container_name: fusiondirectory
+    image: tiredofit/fusiondirectory:1.4
     labels:
-    - traefik.enable=true
-    - traefik.frontend.rule=Host:fusiondirectory.example.org
-    - traefik.port=80
-    - traefik.docker.network=proxy
-    - traefik.backend=fusiondirectory-app
+      traefik.enable: "true"
+      traefik.http.routers.fusionDirectory.entryPoints: web
+      traefik.http.routers.fusionDirectory.tls.certResolver: default
+      traefik.http.routers.fusionDirectory.rule: Host(`fusiondirectory.example.org`, `fd.example.org`)
+      traefik.http.routers.fusionDirectory.middlewares: redirectFd@docker
+      traefik.http.middlewares.redirectFd.redirectRegex.regex: fd.example.org(.*)
+      traefik.http.middlewares.redirectFd.redirectRegex.replacement: fusiondirectory.example.org$${1}
     volumes:
-    - ./logs:/www/logs
-    #- ./custom:/assets/fusiondirectory
-    #- ./plugins-custom:/assets/plugins-custom
+    - fusiondirectory_logs:/www/logs
+    # - fusiondirectory_custom:/assets/fusiondirectory
+    # - fusiondirectory_plugins-custom:/assets/plugins-custom
     environment:
     - VIRTUAL_HOST=fusiondirectory.example.org
-    - VIRTUAL_NETWORK=proxy
+    - VIRTUAL_NETWORK=web
     - VIRTUAL_PORT=80
-    - LETSENCRYPT_HOST=fusiondirectory.example.org
-    - LETSENCRYPT_EMAIL=yourname@example.org
+    # - LETSENCRYPT_HOST=fusiondirectory.example.org
+    # - LETSENCRYPT_EMAIL=yourname@example.org
 
-    - ZABBIX_HOSTNAME=fusiondirectory-app
+    - ZABBIX_HOSTNAME=fusiondirectory
 
+    # Upstream default, and default enabled on docker-openldap-fusiondirectory
     - ENABLE_ARGONAUT=FALSE
     - PLUGIN_AUDIT=TRUE
+    - PLUGIN_DNS=TRUE
     - PLUGIN_DSA=TRUE
     - PLUGIN_LDAPDUMP=TRUE
     - PLUGIN_LDAPMANAGER=TRUE
@@ -33,9 +38,10 @@ services:
     - PLUGIN_PPOLICY=TRUE
     - PLUGIN_SSH=TRUE
     - PLUGIN_SUDO=TRUE
+    - PLUGIN_SYSTEMS=TRUE
     - PLUGIN_WEBSERVICE=TRUE
 
-    - LDAP1_HOST=openldap-fusiondirectory
+    - LDAP1_HOST=openldap
     - LDAP1_BASE_DN=dc=example,dc=org
     - LDAP1_ADMIN_DN=cn=admin,dc=example,dc=org
     - LDAP1_ADMIN_PASS=admin
@@ -49,13 +55,31 @@ services:
     #- LDAP2_NAME=Development
     #- LDAP2_TLS=TRUE
     networks:
-    - proxy
-    - services
+    - web
+    - openldap
+    expose:
+      - 80
     restart: always
 
 networks:
-  proxy:
+  web:
     external: true
-  services:
+  openldap:
     external: true
 
+volumes:
+  fusiondirectory_logs:
+    driver_opts:
+      type: none
+      device: ${VOLUMES_ROOT}/logs
+      o: bind
+  # fusiondirectory_custom:
+  #   driver_opts:
+  #     type: none
+  #     device: ${VOLUMES_ROOT}/custom
+  #     o: bind
+  # fusiondirectory_plugins-custom:
+  #   driver_opts:
+  #     type: none
+  #     device: ${VOLUMES_ROOT}/plugins-custom
+  #     o: bind
