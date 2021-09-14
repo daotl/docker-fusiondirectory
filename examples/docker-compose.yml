@@ -40,6 +40,8 @@ services:
     - PLUGIN_SUDO=TRUE
     - PLUGIN_SYSTEMS=TRUE
     - PLUGIN_WEBSERVICE=TRUE
+    # Custom
+    - PLUGIN_MIXEDGROUPS=TRUE # Seems to be needed for OpenLDAP SCHEMA_TYPE=rfc2307bis
 
     - LDAP1_HOST=openldap
     - LDAP1_BASE_DN=dc=example,dc=org
