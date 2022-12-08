@@ -6,13 +6,10 @@ services:
     container_name: fusiondirectory
     image: tiredofit/fusiondirectory:1.4
     labels:
-      traefik.enable: "true"
-      traefik.http.routers.fusionDirectory.entryPoints: web
-      traefik.http.routers.fusionDirectory.tls.certResolver: default
-      traefik.http.routers.fusionDirectory.rule: Host(`fusiondirectory.example.org`, `fd.example.org`)
-      traefik.http.routers.fusionDirectory.middlewares: redirectFd@docker
-      traefik.http.middlewares.redirectFd.redirectRegex.regex: fd.example.org(.*)
-      traefik.http.middlewares.redirectFd.redirectRegex.replacement: fusiondirectory.example.org$${1}
+      caddy: fusiondirectory.example.org
+      caddy.reverse_proxy: '{{upstreams}}'
+      caddy_fd: fd.example.org
+      caddy_fd.redir: 'https://fusiondirectory.example.org{uri} permanent'     
     volumes:
     - fusiondirectory_logs:/www/logs
     # - fusiondirectory_custom:/assets/fusiondirectory
