@@ -1,4 +1,4 @@
-FROM tiredofit/nginx-php-fpm:7.4
+FROM docker.io/tiredofit/nginx-php-fpm:7.4
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ## Set Environment Varialbes
@@ -9,12 +9,15 @@ ENV ARGONAUT_VERSION=1.4-dev \
     SMARTY_VERSION=3.1.39 \
     SMARTYGETTEXT_VERSION=1.6.2 \
     INSTANCE=default \
+    NGINX_SITE_ENABLED=fusiondirectory \
     NGINX_WEBROOT=/www/fusiondirectory \
     PHP_ENABLE_CREATE_SAMPLE_PHP=FALSE \
     PHP_ENABLE_GETTEXT=TRUE \
     PHP_ENABLE_IMAGICK=TRUE \
     PHP_ENABLE_IMAP=TRUE \
-    PHP_ENABLE_LDAP=TRUE
+    PHP_ENABLE_LDAP=TRUE \
+    IMAGE_NAME="tiredofit/fusiondirectory" \
+    IMAGE_REPO_URL="https://github.com/tiredofit/docker-fusiondirectory/"
 
 # Build Dependencies
 RUN set -x && \
@@ -90,8 +93,8 @@ RUN set -x && \
     chmod 750 /usr/sbin/tsmarty2c.php && \
     \
 ## Install Schema2LDIF
-    curl -sSL https://repos.fusiondirectory.org/sources/schema2ldif/schema2ldif-${SCHEMA2LDIF_VERSION}.tar.gz| tar xfz - --strip 1 -C /usr && \
-    rm -rf /usr/CHANGELOG && \
+    curl https://codeload.github.com/fusiondirectory/schema2ldif/tar.gz/${SCHEMA2LDIF_VERSION} | tar xvfz - --strip 1 -C /usr && \
+    rm -rf /usr/Changelog && \
     rm -rf /usr/LICENSE && \
     \
 ## Install Communication Server

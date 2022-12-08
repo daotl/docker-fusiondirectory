@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bash
+#!/command/with-contenv bash
 
 source /assets/functions/00-container
 prepare_service
@@ -46,9 +46,10 @@ fi
 ## Webservice / REST
 if var_true "${PLUGIN_WEBSERVICE}" || var_true "${PLUGIN_REST}" ; then
   print_debug "Enabling REST plugin"
-  sed -i "s|<LOG_ACCESS_LOCATION>|${NGINX_LOG_ACCESS_LOCATION}|g" /etc/nginx/conf.available/rest.template
-  sed -i "s|<LOG_ERROR_LOCATION>|${NGINX_LOG_ERROR_LOCATION}|g" /etc/nginx/conf.available/rest.template
-  sed -i "/### Includes/a\ \ \ \ \ \ include \/etc\/nginx\/conf.available\/rest.template;" /etc/nginx/conf.d/default.conf
+  sed -i "s|<LOG_ACCESS_LOCATION>|${NGINX_LOG_ACCESS_LOCATION}|g" /etc/nginx/sites.available/rest.template
+  sed -i "s|<LOG_ERROR_LOCATION>|${NGINX_LOG_ERROR_LOCATION}|g" /etc/nginx/sites.available/rest.template
+  sed -i "/include \/etc\/nginx\/sites.available\/rest.template;/d" /etc/nginx/sites.available/fusiondirectory.conf
+  sed -i "/### Includes/a\ \ \ \ \ \ include \/etc\/nginx\/sites.available\/rest.template;" /etc/nginx/sites.available/fusiondirectory.conf
 fi
 
 ### Cloud
@@ -75,6 +76,11 @@ fi
 if var_true "${PLUGIN_DOVECOT}"; then
   export PLUGIN_MAIL=TRUE
   export PLUGIN_SYSTEMS=TRUE
+fi
+
+## Kopano
+if var_true "${PLUGIN_MAILINBLACK}"; then
+  :
 fi
 
 ## Kopano
@@ -363,6 +369,7 @@ if var_false "${PLUGIN_LDAPDUMP}"; then rm -rf /assets/fusiondirectory-plugins/l
 if var_false "${PLUGIN_LDAPMANAGER}"; then rm -rf /assets/fusiondirectory-plugins/ldapmanager ; fi;
 if var_false "${PLUGIN_KOPANO}"; then rm -rf /assets/fusiondirectory-plugins/kopano ; fi;
 if var_false "${PLUGIN_MAIL}" ; then rm -rf /assets/fusiondirectory-plugins/mail ; fi;
+if var_false "${PLUGIN_MAILINBLACK}"; then rm -rf /assets/fusiondirectory-plugins/mailinblack ; fi;
 if var_false "${PLUGIN_MIGRATION_MAILROUTING}"; then rm -rf /assets/fusiondirectory-plugins/migration-mailrouting ; fi;
 if var_false "${PLUGIN_MIXEDGROUPS}"; then rm -rf /assets/fusiondirectory-plugins/mixedgroups ; fi;
 if var_false "${PLUGIN_NAGIOS}"; then rm -rf /assets/fusiondirectory-plugins/nagios ; fi;
@@ -539,15 +546,8 @@ if [ -d /assets/custom ] ; then
    fi
 fi
 
-## Execute Custom Scripts
-if [ -d /assets/custom-scripts/ ] ; then
-    print_warn "Found Custom Scripts to Execute"
-    for f in $(find /assets/custom-scripts/ -name \*.sh -type f); do
-        print_warn "Running Script ${f}"
-        chmod +x "${f}"
-        ${f}
-    done
-fi
+custom_files "${CONTAINER_CUSTOM_PATH}" "${NGINX_WEBROOT}" "${NGINX_USER}" "${NGINX_GROUP}"
+custom_scripts
 
 chown -R "${NGINX_USER}":"${NGINX_GRROUP}" "${NGINX_WEBROOT}"
 

@@ -24,7 +24,7 @@ services:
     # - LETSENCRYPT_HOST=fusiondirectory.example.org
     # - LETSENCRYPT_EMAIL=yourname@example.org
 
-    - ZABBIX_HOSTNAME=fusiondirectory
+    - CONTAINER_NAME=fusiondirectory
 
     # Upstream default, and default enabled on docker-openldap-fusiondirectory
     - ENABLE_ARGONAUT=FALSE

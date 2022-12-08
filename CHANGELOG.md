@@ -1,3 +1,69 @@
+## 2.7.21 2022-11-03 <dave at tiredofit dot ca>
+
+   ### Added
+      - Version bump to get new updates since last build
+
+
+## 2.7.20 2022-10-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Migrate legacy nginx configuration
+
+
+## 2.7.19 2022-08-06 <dave at tiredofit dot ca>
+
+   ### Added
+      - Start using custom_scripts and custom_files functions from base
+
+
+## 2.7.18 2022-07-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change where Schema2LDIF is installed from
+
+
+## 2.7.17 2022-06-23 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Patchup for 2.7.16
+
+
+## 2.7.16 2022-06-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Support tiredofit/nginx:6.0.0 and tiredofit/nginx-php-fpm:7.0.0 changes
+
+
+## 2.7.15 2022-02-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Update to support upstream base image features
+
+
+## 2.7.14 2021-11-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Additional Fix for REST Nginx configuration
+
+
+## 2.7.13 2021-11-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for 2.7.12
+
+
+## 2.7.12 2021-11-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for when containers weren't compltely stopped and REST plugins enabled
+
+
+## 2.7.11 2021-10-16 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add MailinBlack plugin
+
+
 ## 2.7.10 2021-08-26 <bmalynovytch@github>
 
    ### Fixed
