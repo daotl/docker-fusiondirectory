@@ -9,7 +9,7 @@ services:
       caddy: fusiondirectory.example.org
       caddy.reverse_proxy: '{{upstreams}}'
       caddy_fd: fd.example.org
-      caddy_fd.redir: 'https://fusiondirectory.example.org{uri} permanent'     
+      caddy_fd.redir: 'https://fusiondirectory.example.org{uri} permanent'
     volumes:
     - fusiondirectory_logs:/www/logs
     # - fusiondirectory_custom:/assets/fusiondirectory
@@ -24,6 +24,7 @@ services:
     - CONTAINER_NAME=fusiondirectory
 
     # Upstream default, and default enabled on docker-openldap-fusiondirectory
+    # https://github.com/tiredofit/docker-openldap-fusiondirectory/tree/2.6-1.4#schema-installation
     - ENABLE_ARGONAUT=FALSE
     - PLUGIN_AUDIT=TRUE
     - PLUGIN_DNS=TRUE
@@ -34,13 +35,13 @@ services:
     - PLUGIN_PERSONAL=TRUE
     - PLUGIN_PPOLICY=TRUE
     - PLUGIN_SSH=TRUE
-    - PLUGIN_SUDO=TRUE
     - PLUGIN_SYSTEMS=TRUE
     - PLUGIN_WEBSERVICE=TRUE
     # Custom
     - PLUGIN_MIXEDGROUPS=TRUE # Seems to be needed for OpenLDAP SCHEMA_TYPE=rfc2307bis
     - PLUGIN_ALIAS=TRUE
     - PLUGIN_APPLICATIONS=TRUE
+    - PLUGIN_ARCHIVE=TRUE
     - PLUGIN_CERTIFICATES=TRUE
     - PLUGIN_COMMUNITY=TRUE
     - PLUGIN_DOVECOT=TRUE
@@ -48,6 +49,9 @@ services:
     - PLUGIN_GPG=TRUE
     - PLUGIN_POSIX=TRUE
     - PLUGIN_POSTFIX=TRUE
+    - PLUGIN_QUOTA
+    - PLUGIN_SPAMASSASSIN
+    - PLUGIN_SUDO
     - PLUGIN_WEBLINK=TRUE
 
     - LDAP1_HOST=openldap
